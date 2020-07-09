@@ -71,7 +71,7 @@
   
   CH
   
-  ## DH: Location history - distance information of where individuals were caught
+  ## DH: Location history - distance from the downstream end to the upstream landmark of a (re)capture subsection
   DH = dat1 %>%
     mutate(Occasion = as.numeric(factor(ym) )) %>%
     arrange(Occasion) %>%
