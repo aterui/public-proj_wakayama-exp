@@ -29,16 +29,9 @@
   Nday <- diff(apply(J, 2, median, na.rm = T))
   Grid <- expand.grid(CL = 1:3, TR = 1:3)
   Grid$G <- 1:9; Grid$id <- as.numeric(paste0(Grid$CL, Grid$TR) )
-  groupdat = data.frame(id = as.numeric(paste0(CH$CL, CH$TR)) ) %>%
-    left_join(Grid, by = "id")
+  groupdat = data.frame(id = as.numeric(paste0(CH$CL, CH$TR)) ) %>% left_join(Grid, by = "id")
   G <- groupdat$G
-    
-  #CL <- CH$CL; TR <- CH$TR
-  #G <- NULL
-  #G[TR==1] <- CL[TR==1]
-  #G[TR==2] <- CL[TR==2]+3
-  #G[TR==3] <- CL[TR==3]+6
-  
+
   Djags <- list( X = X, Y = Y, Nday = Nday, z = z,
                  Nind = nrow(Y), Nt = ncol(Y), Ng = length(unique(G) ),
                  G = G, ObsF = ObsF)
