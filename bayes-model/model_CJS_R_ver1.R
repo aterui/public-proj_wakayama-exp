@@ -24,16 +24,19 @@ model{
   sigma <- 0.15
 
   for(t in 1:(Nt-1)){
+    M[t] <- Nday[t]/30 # transform from # days to # months
     for(j in 1:Ncl){
-      logit(pi[j,t]) <- logit.pi[j,t]
-      logit.pi[j,t] ~ dnorm(logit.mu.pi, tau.pi)
-      p[j,t] <- exp(log(pi[j,t])/(Nday[t]/30) )
+      logit.p[j,t] ~ dnorm(logit.mu.p, tau.p)
+      logit(p[j,t]) <- logit.p[j,t]
+      pi[j,t] <- exp(M[t]*log(p[j,t])) # transform from p to pi
     }
   }
-  logit.mu.pi ~ dnorm(0, ninfo)
-  logit(mu.pi) <- logit.mu.pi
-  tau.pi ~ dscaled.gamma(2.5, 1)
-  sigma.pi <- 1/sqrt(tau.pi)
+  
+  ## Hyper parameters
+  logit.mu.p ~ dnorm(0, ninfo)
+  logit(mu.p) <- logit.mu.p
+  tau.p ~ dscaled.gamma(2.5, 1)
+  sigma.p <- sqrt(1/tau.p)
   
   # Variable transformation ----
   for(j in 1:Ncl){
