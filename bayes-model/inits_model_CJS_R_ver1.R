@@ -10,7 +10,7 @@
   
 # MCMC setting ----
   n.ad <- 100
-  n.iter <- 2E+3
+  n.iter <- 1.5E+4
   n.thin <- max(3, ceiling(n.iter/500))
   burn <- ceiling(max(10, n.iter/2))
   Sample <- ceiling(n.iter/n.thin)
@@ -30,7 +30,7 @@
                  Nind = nrow(Y), Nt = ncol(Y), Ncl = length(unique(CL)),
                  CL = CL, ObsF = ObsF)
   
-  para <- c("xi", "mu.pi", "sigma.pi", "p", "phi", "alpha", "loglik")
+  para <- c("xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha", "loglik")
   inits <- replicate(3, list(logit.pi = matrix(2, nrow = 3, ncol = 6),
                              .RNG.name = "base::Mersenne-Twister",
                              .RNG.seed = NA ), simplify = F )
@@ -46,19 +46,22 @@
   source("function_jags2bugs.R")
   bpost <- jags2bugs(post$mcmc)
   file1 <- paste0("result/re_model_cjs_r_ver1_", Sys.Date(), ".csv")
-  write.csv(bpost$summary, file1)
-  print(bpost, 2)
+  file2 <- paste0("result/waic_model_cjs_r_ver1_", Sys.Date(), ".csv")
+  print(max(bpost$summary[,"Rhat"]) )
   
-# WAIC ----
-  library(loo)
-  loglik <- NULL
-  for(i in 1:nrow(Y)){
-    for(t in (ObsF[i]+1):ncol(Y)){
-      x <- unlist(post$mcmc[,paste0("loglik[", i, ",", t, "]")])
-      loglik <- cbind(loglik, c(x) )
+  if(all(bpost$summary[,"Rhat"] < 1.1) ){
+    ## Estimate summary
+    write.csv(bpost$summary, file1)
+    
+    ## WAIC
+    library(loo)
+    loglik <- NULL
+    for(i in 1:nrow(Y)){
+      for(t in (ObsF[i]+1):ncol(Y)){
+        x <- unlist(post$mcmc[,paste0("loglik[", i, ",", t, "]")])
+        loglik <- cbind(loglik, c(x) )
+      }
     }
+    WAIC <- waic(loglik)
+    write.csv(WAIC$estimates, file2)
   }
-  WAIC <- waic(loglik)
-  file2 <- paste0("Result/waic_model_cjs_r_ver1_", Sys.Date(), ".csv")
-  write.csv(WAIC$estimates, file2)
-  
