@@ -1,7 +1,24 @@
+#' ---
+#' title: "Data sorting: Ashiu experiment"
+#' author: Akira Terui
+#' output:
+#'   html_document:
+#'     toc: TRUE
+#'     toc_float: TRUE
+#'     theme: "paper"
+#'     df_print: paged
+#' ---
+
+#' # Session information
+  sessionInfo()
+
+#' # Load library
+#' Initialize and load `tidyverse`
   # Reset all
   rm(list=ls(all.names=T))
   library(tidyverse)
   
+#' # Read data
   # Data load ----
   d0 <- read.csv("data/original-mr-data.csv")
   dat = d0 %>%
@@ -11,7 +28,11 @@
            ym = format(as.Date(date), format="%Y-%m"), # reformat date
            Julian = julian(as.Date(date)) )# Julian date
   str(dat)
-  
+
+#' # Data removal
+#' 
+#' - Remove: ID of individuals that were captured once only at the last occasion
+#' - Remove: individuals with mutiple treatment assignments
   # Data removal ----
   ## Remove: ID of individuals that were captured once only at the last occasion
   ## Remove: individuals with mutiple treatment assignments
@@ -20,12 +41,20 @@
     filter(id %in% names(which(table(id) > 1)) | ym != '2017-10') %>%
     filter(id %in% names(which(table(unlist(tapply(id, treatment, unique))) == 1) ) )
 
+#' # History matrix
+#' Create matrices of capture-history `CH`, capture locations `DH`, Julian date `JH`
+#' 
+#' - Variable transformation
+#'     - `Occasion` - date (`ym`) transformation: `1...7 = 2016-05...2017-10`
+#'     - `CL` - `cluster` transformation: `c(1, 2, 3) = c('1st', '2nd', '3rd')`
+#'     - `TR` - `treatment` transformation: `c(1, 2, 3) = c('control', 'early', 'late')`
   # History matrix ----
   ## CH: Capture history - binary information of recaptured or not
   CH = dat1 %>%
     mutate(Occasion = as.numeric(factor(ym) ), capture = 1) %>%
     arrange(Occasion) %>%
-    pivot_wider(names_from = Occasion, values_from = capture, id_cols = c(id, cluster, treatment), values_fill = list(capture = 0)) %>%
+    pivot_wider(names_from = Occasion, values_from = capture,
+                id_cols = c(id, cluster, treatment), values_fill = list(capture = 0)) %>%
     rename(CL = cluster) %>%
     mutate(CL = as.numeric(CL)) %>%
     rename(TR = treatment) %>%
@@ -39,7 +68,9 @@
   }
   
   CH[,which(colnames(CH) %in% as.character(1:7))] <- ch
-
+  
+  CH
+  
   ## DH: Location history - distance information of where individuals were caught
   DH = dat1 %>%
     mutate(Occasion = as.numeric(factor(ym) )) %>%
@@ -50,6 +81,8 @@
     rename(TR = treatment) %>%
     mutate(TR = as.numeric(TR)) %>% # 1: control, 2: early, 3: late
     arrange(id)
+  
+  DH
   
   ## JH: Julian history - Julian date of capture for each occasion
   JH = dat1 %>%
@@ -62,6 +95,11 @@
     mutate(TR = as.numeric(TR)) %>% # 1: control, 2: early, 3: late
     arrange(id)
   
+  JH
+
+#' # Save files
+#' Save matrices
+#+ eval = F 
   # Save output ----
   filename1 <- paste0("data/matrix_dh", Sys.Date(), ".csv")
   filename2 <- paste0("data/matrix_ch", Sys.Date(), ".csv")
