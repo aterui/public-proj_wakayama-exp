@@ -25,7 +25,7 @@
   para <- c("p0", "pi0", "logit.pi0", "sigma.eps", "log.mu", "lambda", "N")
     
   m <-	NULL
-  m <- read.jagsfile(file="BayesModel/model_detectability.R")
+  m <- read.jagsfile(file="bayes-model/model_detectability.R")
   post <- run.jags(m$model, monitor=para, data=Djags, inits = inits, adapt = n.ad,
                    burnin = burn, sample = Sample, n.chains = 3, thin = n.thin,
                    method = "parallel", n.sims=3, modules = "glm")
@@ -34,6 +34,6 @@
   bpost <- jags2bugs(post$mcmc)
         
 # Save results ----
-  filename <- paste0("Result/summary_detectability_", Sys.Date(), ".csv")
+  filename <- paste0("result/summary_detectability_", Sys.Date(), ".csv")
   write.csv(bpost$summary, filename)
   
