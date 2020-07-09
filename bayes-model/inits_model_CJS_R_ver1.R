@@ -59,6 +59,6 @@
     }
   }
   WAIC <- waic(loglik)
-  file2 <- paste0("Result/WAIC_model_cjs_r_ver1_", Sys.Date(), ".csv")
+  file2 <- paste0("Result/waic_model_cjs_r_ver1_", Sys.Date(), ".csv")
   write.csv(WAIC$estimates, file2)
   
