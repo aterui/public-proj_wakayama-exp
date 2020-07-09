@@ -8,7 +8,7 @@ model{
   #   pi - survival probability during a capture-recapture interval (duration varies by occasion)
   #   p - monthly survival
   #   mu.p - mean monthly survival
-  #   sigma.p - sd of survival among months
+  #   sigma.p - sd of monthly survival among capture-recapture intervals
   #   phi - cumulative survival probability   
   #   theta - rate parameter for the dispersal model (Laplace)
   # Latent variables:
@@ -33,7 +33,7 @@ model{
   logit.mu.p ~ dnorm(0, ninfo)
   logit(mu.p) <- logit.mu.p
   tau.p ~ dscaled.gamma(2.5, 1)
-  sigma.p <- sqrt(1/tau.pi)
+  sigma.p <- sqrt(1/tau.p)
   
   # Variable transformation ----
   phi[1] <- 1

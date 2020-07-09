@@ -28,8 +28,8 @@
   Djags <- list( X = X, Y = Y, Nday = Nday, z = z,
                  Nind = nrow(Y), Nt = ncol(Y), ObsF = ObsF)
   
-  para <- c("xi", "mu.pi", "sigma.pi", "p", "phi", "alpha", "loglik")
-  inits <- replicate(3, list(logit.pi = rep(2, 6),
+  para <- c("xi", "mu.p", "sigma.p", "p", "phi", "alpha", "loglik")
+  inits <- replicate(3, list(logit.p = rep(2, 6),
                              .RNG.name = "base::Mersenne-Twister",
                              .RNG.seed = NA ), simplify = F )
   for(k in 1:3) inits[[k]]$.RNG.seed <- k
