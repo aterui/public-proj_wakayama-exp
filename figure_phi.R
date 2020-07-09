@@ -3,7 +3,7 @@
   
   # Read data ----
   library(stringr)
-  dat <- read.csv("Result/re_modelCJS_R_ver2_2019-12-09.csv")
+  dat <- read.csv("result/re_model_cjs_r_ver2_2020-07-09.csv")
   ID <- which(dat$X=="phi[1,7]"):which(dat$X=="phi[9,7]")
   dat_phi <- dat[ID,]
   L <- list(NULL); L[[1]] <- 1:3; L[[2]] <- 4:6; L[[3]] <- 7:9
@@ -11,7 +11,7 @@
   xlab <- c("CL1", "CL2", "CL3")
   
   # Plot ----
-  pdf("figure_phi_R_final.pdf", width = 10, height = 4)
+  pdf("figure_phi.pdf", width = 10, height = 4)
   par(mfrow = c(1,3), cex.axis = 1.5, oma = c(2,2,0,0))
   for(i in 1:length(L)){
     plot(0, xlim= c(0.5, 3.5), ylim = c(0,1), type = "n", ann = F, axes = F)
