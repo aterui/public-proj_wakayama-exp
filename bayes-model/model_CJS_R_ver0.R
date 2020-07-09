@@ -26,10 +26,12 @@ model{
   for(t in 1:(Nt-1)){
     logit.p[t] ~ dnorm(logit.mu.p, tau.p)
     logit(p[t]) <- logit.p[t]
-    pi[t] <- exp(M[t]*log(p[t]))
+    pi[t] <- exp(M[t]*log(p[t])) # transform from p to pi
     
     M[t] <- Nday[t]/30 # transform from # days to # months
   }
+  
+  ## Hyper parameters
   logit.mu.p ~ dnorm(0, ninfo)
   logit(mu.p) <- logit.mu.p
   tau.p ~ dscaled.gamma(2.5, 1)
