@@ -9,8 +9,7 @@
            SecUL = ceiling(distance*0.1)*10, # upstream landmark
            SecDL = SecUL - 10, # downstream landmark
            ym = format(as.Date(date), format="%Y-%m"), # reformat date
-           Julian = julian(as.Date(date)) # Julian date
-    )
+           Julian = julian(as.Date(date)) )# Julian date
   str(dat)
   
   # Data removal ----
