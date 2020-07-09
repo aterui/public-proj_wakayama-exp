@@ -1,5 +1,6 @@
 # Reset ----
   rm(list=ls(all.names=T))
+  library(tidyverse)
 
 # Read data ----
   library(runjags)
@@ -10,7 +11,7 @@
   
 # MCMC setting ----
   n.ad <- 100
-  n.iter <- 2E+3
+  n.iter <- 1E+4
   n.thin <- max(3, ceiling(n.iter/500))
   burn <- ceiling(max(10, n.iter/2))
   Sample <- ceiling(n.iter/n.thin)
@@ -36,8 +37,8 @@
                  Nind = nrow(Y), Nt = ncol(Y), Ng = length(unique(G) ),
                  G = G, ObsF = ObsF)
   
-  para <- c("mu.pi", "sigma.pi", "xi", "alpha", "p", "phi", "loglik")
-  inits <- replicate(3, list(logit.pi = matrix(0, nrow = 9, ncol = 6),
+  para <- c("xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha", "loglik")
+  inits <- replicate(3, list(logit.p = matrix(0, nrow = 9, ncol = 6),
                              .RNG.name = "base::Mersenne-Twister",
                              .RNG.seed = NA ), simplify = F )
   for(k in 1:3) inits[[k]]$.RNG.seed <- k
@@ -51,20 +52,24 @@
 # Output ----
   source("function_jags2bugs.R")
   bpost <- jags2bugs(post$mcmc)
-  file1 <- paste0("Result/re_model_cjs_r_ver2_", Sys.Date(), ".csv")
-  write.csv(bpost$summary, file1)
-  print(bpost, 2)
-  
-# WAIC ----
-  library(loo)
-  loglik <- NULL
-  for(i in 1:nrow(Y)){
-    for(t in (ObsF[i]+1):ncol(Y)){
-      x <- unlist(post$mcmc[,paste0("loglik[", i, ",", t, "]")])
-      loglik <- cbind(loglik, c(x) )
-    }
-  }
-  WAIC <- waic(loglik)
+  file1 <- paste0("result/re_model_cjs_r_ver2_", Sys.Date(), ".csv")
   file2 <- paste0("result/waic_model_cjs_r_ver2_", Sys.Date(), ".csv")
-  write.csv(WAIC$estimates, file2)
+  maxid <- min(which(str_detect(rownames(bpost$summary), "loglik"))) - 1
+  print(max(bpost$summary[1:maxid,"Rhat"]) )
   
+  if(all(bpost$summary[1:maxid,"Rhat"] < 1.1) ){
+    ## Estimate summary
+    write.csv(bpost$summary, file1)
+    
+    ## WAIC
+    library(loo)
+    loglik <- NULL
+    for(i in 1:nrow(Y)){
+      for(t in (ObsF[i]+1):ncol(Y)){
+        x <- unlist(post$mcmc[,paste0("loglik[", i, ",", t, "]")])
+        loglik <- cbind(loglik, c(x) )
+      }
+    }
+    WAIC <- waic(loglik)
+    write.csv(WAIC$estimates, file2)
+  }

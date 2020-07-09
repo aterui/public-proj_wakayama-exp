@@ -1,5 +1,6 @@
 # Reset ----
   rm(list=ls(all.names=T))
+  library(tidyverse)
 
 # Read data ----
   library(runjags)
@@ -10,7 +11,7 @@
 
 # MCMC setting ----
   n.ad <- 100
-  n.iter <- 1.5E+4
+  n.iter <- 1E+4
   n.thin <- max(3, ceiling(n.iter/500))
   burn <- ceiling(max(10, n.iter/2))
   Sample <- ceiling(n.iter/n.thin)
@@ -45,9 +46,10 @@
   bpost <- jags2bugs(post$mcmc)
   file1 <- paste0("result/re_model_cjs_r_ver0_", Sys.Date(), ".csv")
   file2 <- paste0("result/waic_model_cjs_r_ver0_", Sys.Date(), ".csv")
-  print(max(bpost$summary[,"Rhat"]) )
+  maxid <- min(which(str_detect(rownames(bpost$summary), "loglik"))) - 1
+  print(max(bpost$summary[1:maxid,"Rhat"]) )
   
-  if(all(bpost$summary[,"Rhat"] < 1.1) ){
+  if(all(bpost$summary[1:maxid,"Rhat"] < 1.1) ){
     ## Estimate summary
     write.csv(bpost$summary, file1)
     
