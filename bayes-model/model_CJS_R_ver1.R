@@ -1,4 +1,20 @@
 model{
+  # Model description:
+  #   This model assumes heterogeneity in survival among life-history groups but not among subsidy treatments
+  #
+  # Parameters:
+  #   alpha - mean delta during the survey period (unit is m/per day)
+  #   xi - detactability with two-pass electrofishing. Informative prior was used (estimates from removal sampling)
+  #   pi - survival probability during a capture-recapture interval (duration varies by occasion)
+  #   p - monthly survival
+  #   mu.p - mean monthly survival
+  #   sigma.p - sd of survival among months
+  #   phi - cumulative survival probability   
+  #   theta - rate parameter for the dispersal model (Laplace)
+  # Latent variables:
+  #   zs - latent variable indicating whether an individidual remains in the study area or not (zs = 1, stay; zs = 0, leave)
+  #   z - latent variable indicating whether an individidual survives or not (z = 1, survive; z = 0, dead)
+  
   ninfo <- 0.001
   
   # Priors ----
