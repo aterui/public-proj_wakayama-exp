@@ -3,7 +3,7 @@
   library(tidyverse)
   
   # Data load ----
-  d0 <- read.csv("data/mr-data-original.csv")
+  d0 <- read.csv("data/original-mr-data.csv")
   dat = d0 %>%
     mutate(id = as.character(id),
            SecUL = ceiling(distance*0.1)*10, # upstream landmark

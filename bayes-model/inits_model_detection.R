@@ -2,7 +2,7 @@
   library(runjags)
 
 # Data load ----
-  dat <- read.csv("Data/Data_Removal.csv")
+  dat <- read.csv("data/original-removal-data.csv")
   
 # Data sort ----
   Y <- cbind(dat$Pass1, dat$Pass2)
