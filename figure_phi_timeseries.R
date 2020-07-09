@@ -3,8 +3,8 @@
 
 # Read data ----
   library(stringr)
-  dat <- read.csv("Result/re_modelCJS_R_ver2_2019-12-09.csv")
-  JH <- read.csv("Data/Matrix_JH2019-11-24.csv")
+  dat <- read.csv("result/re_model_cjs_r_ver2_2020-07-09.csv")
+  JH <- read.csv("data/matrix_jh2020-07-08.csv")
   J <- as.matrix(JH[,which(colnames(JH)=="X1"):ncol(JH)])
   JulianDate <- apply(J, 2, median, na.rm = T)
   
@@ -18,7 +18,7 @@
              "Late-CL1", "Late-CL2", "Late-CL3")
 
 # Plot  
-  pdf("figure_phi_R_ver2.pdf", width = 10, height = 10)
+  pdf("figure_phi_timeseries.pdf", width = 10, height = 10)
   par(mfrow = c(3,3))
   sapply(1:9, function(x){
               tmp <- dat_phi[dat_phi$gID == x, c("X2.5.","X50.","X97.5.")]
