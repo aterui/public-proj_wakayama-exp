@@ -3,9 +3,9 @@
 
 # Read data ----
   library(runjags)
-  DH <- read.csv("Data/Matrix_DH2019-11-24.csv")
-  CH <- read.csv("Data/Matrix_CH2019-11-24.csv")
-  JH <- read.csv("Data/Matrix_JH2019-11-24.csv")
+  DH <- read.csv("data/matrix_dh2020-07-08.csv")
+  CH <- read.csv("data/matrix_ch2020-07-08.csv")
+  JH <- read.csv("data/matrix_jh2020-07-08.csv")
   J <- as.matrix(JH[,which(colnames(JH)=="X1"):ncol(JH)])
   
 # MCMC setting ----
@@ -36,7 +36,7 @@
                              .RNG.seed = NA ), simplify = F )
   for(k in 1:3) inits[[k]]$.RNG.seed <- k
   
-  m <- read.jagsfile("BayesModel/model_CJS_R_ver1.R")
+  m <- read.jagsfile("bayes-model/model_cjs_r_ver1.R")
   post <- run.jags(m$model, monitor = para, data = Djags,
                    n.chains = 3, inits = inits, method = "parallel",
                    burnin = burn, sample = Sample, adapt = n.ad, thin = n.thin,
@@ -45,7 +45,7 @@
 # Output ----
   source("function_jags2bugs.R")
   bpost <- jags2bugs(post$mcmc)
-  file1 <- paste0("Result/re_modelCJS_R_ver1_", Sys.Date(), ".csv")
+  file1 <- paste0("result/re_model_cjs_r_ver1_", Sys.Date(), ".csv")
   write.csv(bpost$summary, file1)
   print(bpost, 2)
   
@@ -59,6 +59,6 @@
     }
   }
   WAIC <- waic(loglik)
-  file2 <- paste0("Result/WAIC_modelCJS_R_ver1_", Sys.Date(), ".csv")
+  file2 <- paste0("Result/WAIC_model_cjs_r_ver1_", Sys.Date(), ".csv")
   write.csv(WAIC$estimates, file2)
   
