@@ -4,11 +4,11 @@ model{
   #
   # Parameters:
   #   alpha - mean delta during the survey period (unit is m/per day)
-  #   xi - detactability with two-pass electrofishing. Informative prior was used (estimates from removal sampling)
+  #   xi - detactability with two-pass electrofishing
   #   pi - survival probability during a capture-recapture interval (duration varies by occasion)
   #   p - monthly survival
   #   mu.p - mean monthly survival
-  #   sigma.p - sd of survival among months
+  #   sigma.p - sd of monthly survival among capture-recapture intervals
   #   phi - cumulative survival probability   
   #   theta - rate parameter for the dispersal model (Laplace)
   # Latent variables:
@@ -20,21 +20,22 @@ model{
   # Priors ----
   alpha ~ dnorm(0, ninfo)
   logit(xi) <- logit.xi
-  logit.xi ~ dnorm(2.56, 1/sigma*sigma) # Informative prior
-  sigma <- 0.15
-
+  logit.xi ~ dnorm(0, ninfo)
+  
   for(t in 1:(Nt-1)){
+    M[t] <- Nday[t]/30 # transform from # days to # months
     for(j in 1:Ng){
-      logit(pi[j,t]) <- logit.pi[j,t]
-      logit.pi[j,t] ~ dnorm(logit.mu.pi, tau.pi)
-      p[j,t] <- exp(log(pi[j,t])/(Nday[t]/30) )
+      logit.p[j,t] ~ dnorm(logit.mu.p, tau.p)
+      logit(p[j,t]) <- logit.p[j,t]
+      pi[j,t] <- exp(M[t]*log(p[j,t])) # transform from p to pi
     }
   }
-  logit.mu.pi ~ dnorm(0, ninfo)
-  logit(mu.pi) <- logit.mu.pi
-  tau.pi ~ dscaled.gamma(2.5, 1)
-  sigma.pi <- 1/sqrt(tau.pi)
-  
+
+  ## Hyper parameters
+  logit.mu.p ~ dnorm(0, ninfo)
+  logit(mu.p) <- logit.mu.p
+  tau.p ~ dscaled.gamma(2.5, 1)
+  sigma.p <- sqrt(1/tau.p)
   
   for(j in 1:Ng){
     phi[j,1] <- 1

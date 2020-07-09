@@ -4,11 +4,11 @@ model{
   #
   # Parameters:
   #   alpha - mean delta during the survey period (unit is m/per day)
-  #   xi - detactability with two-pass electrofishing. Informative prior was used (estimates from removal sampling)
+  #   xi - detactability with two-pass electrofishing
   #   pi - survival probability during a capture-recapture interval (duration varies by occasion)
   #   p - monthly survival
   #   mu.p - mean monthly survival
-  #   sigma.p - sd of survival among months
+  #   sigma.p - sd of monthly survival among capture-recapture intervals
   #   phi - cumulative survival probability   
   #   theta - rate parameter for the dispersal model (Laplace)
   # Latent variables:
@@ -20,9 +20,8 @@ model{
   # Priors ----
   alpha ~ dnorm(0, ninfo)
   logit(xi) <- logit.xi
-  logit.xi ~ dnorm(2.56, 1/sigma*sigma) # Informative prior
-  sigma <- 0.15
-
+  logit.xi ~ dnorm(0, ninfo)
+  
   for(t in 1:(Nt-1)){
     M[t] <- Nday[t]/30 # transform from # days to # months
     for(j in 1:Ncl){
