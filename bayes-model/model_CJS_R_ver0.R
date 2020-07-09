@@ -15,7 +15,6 @@ model{
   #   zs - latent variable indicating whether an individidual remains in the study area or not (zs = 1, stay; zs = 0, leave)
   #   z - latent variable indicating whether an individidual survives or not (z = 1, survive; z = 0, dead)
   
-  
   ninfo <- 0.001
   
   # Priors ----
