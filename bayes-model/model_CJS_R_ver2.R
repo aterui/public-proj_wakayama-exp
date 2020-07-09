@@ -14,6 +14,11 @@ model{
   # Latent variables:
   #   zs - latent variable indicating whether an individidual remains in the study area or not (zs = 1, stay; zs = 0, leave)
   #   z - latent variable indicating whether an individidual survives or not (z = 1, survive; z = 0, dead)
+  # Data:
+  #   Y - capture history
+  #   X - capture location history (measured as distance from the downstream end to the midpoint of each subsection)
+  #   Nday - capture-recapture interval (unit: day)
+  #   M - capture-recapture interval (unit: month)
   
   ninfo <- 0.001
   
@@ -50,20 +55,20 @@ model{
 
   # CJS model ----
   for(i in 1:Nind){# Individual replicate
-    q[i,ObsF[i]] <- 1
+    zs[i,ObsF[i]] <- 1
     for(t in ObsF[i]:(Nt-1) ){# Temporal replicate
       ## Observation process
       loglik[i,t+1] <- logdensity.bern(Y[i,t+1], nu[i,t+1])
       
       Y[i,t+1] ~ dbern(nu[i,t+1])
-      nu[i,t+1] <- xi*q[i,t+1]*z[i,t+1]
+      nu[i,t+1] <- xi*zs[i,t+1]*z[i,t+1]
       
       ## Survival process
       z[i,t+1] ~ dbern(pi[G[i],t]*z[i,t])
       
       # Dispersal model ----
       X[i,t+1] ~ ddexp(X[i,t], theta[t])T(,1350)
-      q[i,t+1] <- step(X[i,t+1])
+      zs[i,t+1] <- step(X[i,t+1])
     }
   }
   

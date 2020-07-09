@@ -14,6 +14,11 @@ model{
   # Latent variables:
   #   zs - latent variable indicating whether an individidual remains in the study area or not (zs = 1, stay; zs = 0, leave)
   #   z - latent variable indicating whether an individidual survives or not (z = 1, survive; z = 0, dead)
+  # Data:
+  #   Y - capture history
+  #   X - capture location history (measured as distance from the downstream end to the midpoint of each subsection)
+  #   Nday - capture-recapture interval (unit: day)
+  #   M - capture-recapture interval (unit: month)
   
   ninfo <- 0.001
   
