@@ -5,9 +5,9 @@ journal:
 # File description
 - main
   - `datasort_mrdata.R` - data formating for mark-recapture data  
-  - `figure_p.R` - scripts for drawing a figure  
-  - `figure_phi.R` - scripts for drawing a figure  
-  - `figure_phi_timeseries.R` - scripts for drawing a figure  
+  - `figure01_p.R` - scripts for drawing a figure  
+  - `figure02_phi.R` - scripts for drawing a figure  
+  - `figure03_phi_timeseries.R` - scripts for drawing a figure  
   - `function_jags2bugs.R` - function `jags2bugs`  
 
 - subfolder `/result`
