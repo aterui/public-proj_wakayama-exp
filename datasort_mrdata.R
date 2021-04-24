@@ -100,7 +100,9 @@
   ## DH: Location history - distance from the downstream end to the upstream landmark of a (re)capture subsection
   DH <- dat1 %>%
     arrange(Occasion) %>%
-    pivot_wider(names_from = Occasion, values_from = SecUL, id_cols = c(id, cluster, treatment)) %>%
+    pivot_wider(names_from = Occasion,
+                values_from = SecUL,
+                id_cols = c(id, cluster, treatment)) %>%
     rename(CL = cluster) %>%
     mutate(CL = as.numeric(factor(CL),
                            levels = c("1st",
@@ -123,7 +125,9 @@
   ## JH: Julian history - Julian date of capture for each occasion
   JH <- dat1 %>%
     arrange(Occasion) %>%
-    pivot_wider(names_from = Occasion, values_from = Julian, id_cols = c(id, cluster, treatment)) %>%
+    pivot_wider(names_from = Occasion,
+                values_from = Julian,
+                id_cols = c(id, cluster, treatment)) %>%
     rename(CL = cluster) %>%
     mutate(CL = as.numeric(factor(CL),
                            levels = c("1st",
