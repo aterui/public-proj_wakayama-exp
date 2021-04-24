@@ -1,25 +1,65 @@
-  # Reset ----
-    rm(list=ls(all.names=T))
+
+# setup -------------------------------------------------------------------
   
-  # Read data ----
-    library(stringr)
-    dat <- read.csv("result/re_model_cjs_r_ver2_2020-07-09.csv")
-    ID <- which(dat$X=="phi[1,7]"):which(dat$X=="phi[9,7]")
-    dat_phi <- dat[ID,]
-    L <- list(NULL); L[[1]] <- 1:3; L[[2]] <- 4:6; L[[3]] <- 7:9
-    TR <- c("Control", "Early", "Late")
-    xlab <- c("CL1", "CL2", "CL3")
+  rm(list=ls(all.names=T))
+  pacman::p_load(tidyverse)
+  d0 <- read_csv("result/re_model_cjs_r_ver2_2021-04-23.csv") %>% 
+    rename(param = X1,
+           lower = '2.5%',
+           median = '50%',
+           upper = '97.5%')
+  
+  ## group match
+  ## CL: cluster - 1st, 2nd, 3rd = c(1,2,3)
+  ## TR: treatment - control, early, late = c(1,2,3)
+  Grid <- expand.grid(CL = 1:3, TR = 1:3)
+  Grid$G <- 1:9
+  
+  ## date
+  JH <- read_csv("data/matrix_jh2021-04-23.csv")
+  J <- as.matrix(JH[,which(colnames(JH) == "occasion1"):ncol(JH)])
+  date <- apply(J, 2, median, na.rm = T) %>% 
+    as.Date(origin = as.Date("1970-01-01"))
+  
+  dat_date <- tibble(occasion = 1:length(date),
+                     date = date)
+  
+
+# format ------------------------------------------------------------------
+  
+  dat <- d0 %>% 
+    filter(str_detect(param, "phi")) %>% 
+    mutate(x = str_extract(param, pattern = "\\[.{1,}\\]"),
+           y = str_remove_all(x, pattern = "\\[|\\]")) %>%
+    separate(y, into = c("group", "occasion"), sep = ",") %>% 
+    mutate(group = as.numeric(group),
+           occasion = as.numeric(occasion)) %>% 
+    left_join(Grid, by = c("group" = "G")) %>% 
+    left_join(dat_date, by = "occasion") %>% 
+    filter(occasion == 7) %>% 
+    mutate(treatment = case_when(TR == 1 ~ "Control",
+                                 TR == 2 ~ "Early",
+                                 TR == 3 ~ "Late"),
+           cluster = case_when(CL == 1 ~ "Cluster 1",
+                               CL == 2 ~ "Cluster 2",
+                               CL == 3 ~ "Cluster 3"))
     
-  # Plot ----
-    pdf("figure_phi.pdf", width = 10, height = 4)
-    par(mfrow = c(1,3), cex.axis = 1.5, oma = c(2,2,0,0))
-    for(i in 1:length(L)){
-      plot(0, xlim= c(0.5, 3.5), ylim = c(0,1), type = "n", ann = F, axes = F)
-      points(dat_phi[L[[i]],"X50."], pch = 19, cex = 1.5)
-      segments(1:3, dat_phi[L[[i]],"X2.5."], 1:3, dat_phi[L[[i]],"X97.5."])
-      axis(1, at = 1:3, labels = xlab); axis(2, las = 2); box(bty = "l")
-      mtext(TR[i])
-    }
-    mtext("Growth cluster", side = 1, outer = T)
-    mtext("Survival", side = 2, outer = T)
-    dev.off()
+    
+# plot --------------------------------------------------------------------
+  
+  g <- ggplot(dat) +
+    geom_point(aes(x = cluster, y = median), 
+               size = 3) +
+    geom_segment(aes(x = cluster,
+                     xend = cluster,
+                     y = lower,
+                     yend = upper)) +
+    facet_wrap(facets = ~ treatment, ncol = 3) + 
+    ylab("Survival probability") +
+    xlab("Growth cluster") +
+    theme_bw() +
+    theme(strip.background = element_blank(),
+          panel.background = element_rect(grey(0.95)),
+          panel.grid = element_blank())
+  
+  print(g)  
