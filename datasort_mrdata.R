@@ -1,5 +1,5 @@
 #' ---
-#' title: "Data sorting: Ashiu experiment"
+#' title: "Data sorting: Wakayama experiment"
 #' author: Akira Terui
 #' output:
 #'   html_document:
@@ -46,8 +46,9 @@
   dat1 <- dat %>%
     drop_na(cluster) %>%
     filter(id %in% names(which(table(id) > 1)) | ym != '2017-10') %>%
-    filter(id %in% names(which(table(unlist(tapply(id, treatment, unique))) == 1) ) )
-
+    filter(id %in% names(which(table(unlist(tapply(id, treatment, unique))) == 1))) %>% 
+    mutate(Occasion = paste0("occasion", as.numeric(factor(ym))))
+           
 #' # History matrix
 #' Create matrices of capture-history `CH`, capture locations `DH`, Julian date `JH`
 #' 
@@ -60,8 +61,7 @@
   
   ## CH: Capture history - binary information of recaptured or not
   CH <- dat1 %>%
-    mutate(Occasion = as.numeric(factor(ym)),
-           capture = 1) %>%
+    mutate(capture = 1) %>%
     arrange(Occasion) %>%
     pivot_wider(names_from = Occasion,
                 values_from = capture,
@@ -85,20 +85,20 @@
     arrange(id)
   
   ## put NA until the first capture
-  ch <- CH %>% select(as.character(1:7))
+  ch <- CH %>%
+    select(sort(unique(dat1$Occasion)))
   
   for(i in 1:nrow(ch)) {
     x <- min(which(ch[i,] == 1)) - 1
     if(x != 0) ch[i, 1:x] <- NA
   }
   
-  CH[, which(colnames(CH) %in% as.character(1:7))] <- ch
+  CH[, which(colnames(CH) %in% sort(unique(dat1$Occasion)))] <- ch
   
   print(CH)
   
   ## DH: Location history - distance from the downstream end to the upstream landmark of a (re)capture subsection
   DH <- dat1 %>%
-    mutate(Occasion = as.numeric(factor(ym))) %>%
     arrange(Occasion) %>%
     pivot_wider(names_from = Occasion, values_from = SecUL, id_cols = c(id, cluster, treatment)) %>%
     rename(CL = cluster) %>%
@@ -122,7 +122,6 @@
   
   ## JH: Julian history - Julian date of capture for each occasion
   JH <- dat1 %>%
-    mutate(Occasion = as.numeric(factor(ym))) %>%
     arrange(Occasion) %>%
     pivot_wider(names_from = Occasion, values_from = Julian, id_cols = c(id, cluster, treatment)) %>%
     rename(CL = cluster) %>%
