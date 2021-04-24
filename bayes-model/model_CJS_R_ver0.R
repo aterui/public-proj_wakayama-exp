@@ -19,10 +19,12 @@ model{
   #   X - capture location history (measured as distance from the downstream end to the midpoint of each subsection)
   #   Nday - capture-recapture interval (unit: day)
   #   M - capture-recapture interval (unit: month)
-  
+
+
+# prior -------------------------------------------------------------------
+    
   ninfo <- 0.001
   
-  # Priors ----
   alpha ~ dnorm(0, ninfo)
   logit(xi) <- logit.xi
   logit.xi ~ dnorm(0, ninfo)
@@ -40,14 +42,18 @@ model{
   logit(mu.p) <- logit.mu.p
   tau.p ~ dscaled.gamma(2.5, 1)
   sigma.p <- sqrt(1/tau.p)
+
+
+# variable transformation -------------------------------------------------
   
-  # Variable transformation ----
   phi[1] <- 1
   for(t in 1:(Nt-1)){
     phi[t+1] <- exp(sum(log(pi[1:t])) )
   }
   
-  # CJS model ----
+
+# spatial CJS -------------------------------------------------------------
+  
   for(i in 1:Nind){# Individual replicate
     zs[i,ObsF[i]] <- 1
     for(t in ObsF[i]:(Nt-1) ){# Temporal replicate
@@ -60,7 +66,7 @@ model{
       ## Survival process
       z[i,t+1] ~ dbern(pi[t]*z[i,t])
       
-      # Dispersal model ----
+      ## Dispersal process
       X[i,t+1] ~ ddexp(X[i,t], theta[t])T(,1350)
       zs[i,t+1] <- step(X[i,t+1])
     }
