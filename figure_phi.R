@@ -3,6 +3,7 @@
   
   rm(list=ls(all.names=T))
   pacman::p_load(tidyverse)
+  
   d0 <- read_csv("result/re_model_cjs_r_ver2_2021-04-23.csv") %>% 
     rename(param = X1,
            lower = '2.5%',
@@ -48,12 +49,13 @@
 # plot --------------------------------------------------------------------
   
   g <- ggplot(dat) +
-    geom_point(aes(x = cluster, y = median), 
-               size = 3) +
     geom_segment(aes(x = cluster,
                      xend = cluster,
                      y = lower,
-                     yend = upper)) +
+                     yend = upper),
+                 color = grey(0.7)) +
+    geom_point(aes(x = cluster, y = median), 
+               size = 2) +
     facet_wrap(facets = ~ treatment, ncol = 3) + 
     ylab("Survival probability") +
     xlab("Growth cluster") +
@@ -63,3 +65,14 @@
           panel.grid = element_blank())
   
   print(g)  
+  
+  ggsave(g,
+         file = "figure/figure_phi.eps",
+         width = 8,
+         height = 3,
+         device = "eps")
+  
+  ggsave(g,
+         file = "figure/figure_phi.pdf",
+         width = 8,
+         height = 3)
