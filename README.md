@@ -21,7 +21,7 @@ journal:
     -   `matrix-*.csv` - formatted data files for spatial CJS
 -   subfolder `/bayes-model`
     -   `inits_model_cjs_r_ver2.R` - run JAGS
-    -   `model_cjs_r_ver0.R` - JAGS model
+    -   `model_cjs_r_ver2.R` - JAGS model
 -   subfolder `/result`
     -   `*.csv` - results of model estimates
 -   subfolder `/figure`
