@@ -7,9 +7,9 @@ pacman::p_load(tidyverse, runjags, loo)
 
 # read data ---------------------------------------------------------------
 
-DH <- read_csv("data/matrix_dh2021-04-23.csv")
-CH <- read_csv("data/matrix_ch2021-04-23.csv")
-JH <- read_csv("data/matrix_jh2021-04-23.csv")
+DH <- readRDS("data_fmt/matrix_dh.rds")
+CH <- readRDS("data_fmt/matrix_ch.rds")
+JH <- readRDS("data_fmt/matrix_jh.rds")
 J <- as.matrix(JH[,which(colnames(JH) == "occasion1"):ncol(JH)])
 
 
@@ -63,7 +63,7 @@ inits <- replicate(3,
                    simplify = F)
 for(k in 1:3) inits[[k]]$.RNG.seed <- k
 
-m <- read.jagsfile("bayes-model/model_cjs_r_ver2.R")
+m <- read.jagsfile("code/model_cjs_r_ver2.R")
 post <- run.jags(m$model,
                  monitor = para,
                  data = Djags,
