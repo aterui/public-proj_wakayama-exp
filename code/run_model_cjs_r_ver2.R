@@ -55,7 +55,7 @@ Djags <- list(X = X,
               G = G,
               ObsF = ObsF)
 
-para <- c("xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha", "loglik")
+para <- c("xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha")
 inits <- replicate(3,
                    list(logit.p = matrix(0, nrow = 9, ncol = 6),
                         .RNG.name = "base::Mersenne-Twister",
@@ -81,23 +81,5 @@ post <- run.jags(m$model,
 # output ------------------------------------------------------------------
 
 bpost <- MCMCvis::MCMCsummary(post$mcmc)
-file1 <- paste0("result/re_model_cjs_r_ver2_", Sys.Date(), ".csv")
-file2 <- paste0("result/waic_model_cjs_r_ver2_", Sys.Date(), ".csv")
-maxid <- min(which(str_detect(rownames(bpost), "loglik"))) - 1
-print(max(bpost[1:maxid, "Rhat"]) )
-
-if(all(na.omit(bpost$Rhat[1:maxid]) < 1.1)){
-  ## Estimate summary
-  write.csv(bpost, file1)
-  
-  ## WAIC
-  loglik <- NULL
-  for(i in 1:nrow(Y)) {
-    for(t in (ObsF[i]+1):ncol(Y)) {
-      x <- unlist(post$mcmc[,paste0("loglik[", i, ",", t, "]")])
-      loglik <- cbind(loglik, c(x) )
-    }
-  }
-  WAIC <- waic(loglik)
-  write.csv(WAIC$estimates, file2)
-}
+saveRDS(bpost, "result/re_model_cjs.rds")
+print(max(na.omit(bpost[, "Rhat"])))
