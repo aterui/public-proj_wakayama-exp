@@ -7,6 +7,7 @@ pacman::p_load(tidyverse, runjags, loo)
 
 # read data ---------------------------------------------------------------
 
+source(here::here("code/format_mrdata.R"))
 DH <- readRDS("data_fmt/matrix_dh.rds")
 CH <- readRDS("data_fmt/matrix_ch.rds")
 JH <- readRDS("data_fmt/matrix_jh.rds")
@@ -16,7 +17,7 @@ J <- as.matrix(JH[,which(colnames(JH) == "occasion1"):ncol(JH)])
 # mcmc setting ------------------------------------------------------------
 
 n.ad <- 100
-n.iter <- 2E+4
+n.iter <- 1E+4
 n.thin <- max(3, ceiling(n.iter/500))
 burn <- ceiling(max(10, n.iter/2))
 Sample <- ceiling(n.iter/n.thin)
@@ -55,15 +56,18 @@ Djags <- list(X = X,
               G = G,
               ObsF = ObsF)
 
-para <- c("xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha")
+para <- c("lrr",
+          "xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha")
 inits <- replicate(3,
-                   list(logit.p = matrix(0, nrow = 9, ncol = 6),
+                   list(logit.p = matrix(0,
+                                         nrow = length(unique(G)),
+                                         ncol = 6),
                         .RNG.name = "base::Mersenne-Twister",
                         .RNG.seed = NA ),
                    simplify = F)
 for(k in 1:3) inits[[k]]$.RNG.seed <- k
 
-m <- read.jagsfile("code/model_cjs_r_ver2.R")
+m <- read.jagsfile("code/model_scjs.R")
 post <- run.jags(m$model,
                  monitor = para,
                  data = Djags,
