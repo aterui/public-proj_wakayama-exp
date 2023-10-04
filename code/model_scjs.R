@@ -48,13 +48,24 @@ model{
 # variable transformation -------------------------------------------------
   
   for(j in 1:Ng){
-    phi[j,1] <- 1
+    phi[j, 1] <- 1
     for(t in 1:(Nt - 1)){
       phi[j, t + 1] <- exp(sum(log(pi[j, 1:t])))
     }
   }
 
-
+  for(j in 1:3) {
+    # log-response ratio for group control = 1
+    lrr[j, 1] <- log(phi[j, Nt]) - log(phi[3, Nt])
+    
+    # log-response ratio (LRR) for group early = 2
+    lrr[j, 2] <- log(phi[j + 3, Nt]) - log(phi[6, Nt])
+    
+    # log-response ratio (LRR) for group late = 3
+    lrr[j, 3] <- log(phi[j + 6, Nt]) - log(phi[9, Nt])
+  }
+        
+  
 # spatial CJS -------------------------------------------------------------
   
   for(i in 1:Nind){# Individual replicate

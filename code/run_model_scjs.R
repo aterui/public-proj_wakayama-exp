@@ -17,7 +17,7 @@ J <- as.matrix(JH[,which(colnames(JH) == "occasion1"):ncol(JH)])
 # mcmc setting ------------------------------------------------------------
 
 n.ad <- 100
-n.iter <- 2E+3
+n.iter <- 1E+4
 n.thin <- max(3, ceiling(n.iter/500))
 burn <- ceiling(max(10, n.iter/2))
 Sample <- ceiling(n.iter/n.thin)
@@ -56,7 +56,8 @@ Djags <- list(X = X,
               G = G,
               ObsF = ObsF)
 
-para <- c("xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha")
+para <- c("lrr",
+          "xi", "mu.p", "sigma.p", "p", "pi", "phi", "alpha")
 inits <- replicate(3,
                    list(logit.p = matrix(0,
                                          nrow = length(unique(G)),
