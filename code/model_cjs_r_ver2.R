@@ -32,7 +32,7 @@ model{
     for(j in 1:Ng){
       logit.p[j, t] ~ dnorm(logit.mu.p[j], tau.p)
       logit(p[j, t]) <- logit.p[j, t]
-      pi[j, t] <- exp(Nday[t]*log(p[j, t])) # transform from p to pi
+      pi[j, t] <- exp(Nday[t] * log(p[j, t])) # transform from p to pi
     }
   }
 
@@ -64,7 +64,7 @@ model{
       loglik[i, t + 1] <- logdensity.bern(Y[i, t + 1], nu[i, t + 1])
       
       Y[i, t + 1] ~ dbern(nu[i, t + 1])
-      nu[i, t + 1] <- xi * zs[i, t + 1]*z[i, t + 1]
+      nu[i, t + 1] <- xi * zs[i, t + 1] * z[i, t + 1]
       
       ## Survival process
       z[i, t + 1] ~ dbern(pi[G[i], t] * z[i, t])
