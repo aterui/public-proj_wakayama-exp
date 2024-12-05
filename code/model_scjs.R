@@ -4,7 +4,7 @@ model{
   #
   # Parameters:
   #   alpha - mean delta during the survey period (unit is m/per day)
-  #   xi - detactability with two-pass electrofishing
+  #   xi - detectability with two-pass electrofishing
   #   pi - survival probability during a capture-recapture interval (duration varies by occasion)
   #   p - daily survival
   #   mu.p - mean monthly survival
@@ -12,8 +12,8 @@ model{
   #   phi - cumulative survival probability   
   #   theta - rate parameter for the dispersal model (Laplace)
   # Latent variables:
-  #   zs - latent variable indicating whether an individidual remains in the study area or not (zs = 1, stay; zs = 0, leave)
-  #   z - latent variable indicating whether an individidual survives or not (z = 1, survive; z = 0, dead)
+  #   zs - latent variable indicating whether an individual remains in the study area or not (zs = 1, stay; zs = 0, leave)
+  #   z - latent variable indicating whether an individual survives or not (z = 1, survive; z = 0, dead)
   # Data:
   #   Y - capture history
   #   X - capture location history (measured as distance from the downstream end to the midpoint of each subsection)
