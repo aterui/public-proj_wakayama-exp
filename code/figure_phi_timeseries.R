@@ -4,9 +4,9 @@
 rm(list=ls(all.names=T))
 pacman::p_load(tidyverse)
 
-d0 <- read_csv("result/re_model_cjs_r_ver2_2021-04-23.csv") %>% 
-  rename(param = X1,
-         lower = '2.5%',
+d0 <- readRDS("result/re_model_cjs.rds") %>% 
+  as_tibble(rownames = "param") %>% 
+  rename(lower = '2.5%',
          median = '50%',
          upper = '97.5%')
 
@@ -17,7 +17,7 @@ Grid <- expand.grid(CL = 1:3, TR = 1:3)
 Grid$G <- 1:9
 
 ## date
-JH <- read_csv("data/matrix_jh2021-04-23.csv")
+JH <- readRDS("data_fmt/matrix_jh.rds")
 J <- as.matrix(JH[,which(colnames(JH) == "occasion1"):ncol(JH)])
 date <- apply(J, 2, median, na.rm = T) %>% 
   as.Date(origin = as.Date("1970-01-01"))
@@ -40,9 +40,13 @@ dat <- d0 %>%
   mutate(treatment = case_when(TR == 1 ~ "Control",
                                TR == 2 ~ "Early",
                                TR == 3 ~ "Late"),
-         cluster = case_when(CL == 1 ~ "Cluster 1",
-                             CL == 2 ~ "Cluster 2",
-                             CL == 3 ~ "Cluster 3"))
+         treatment = fct_relevel(treatment,
+                                 c("Early", "Late")),
+         cluster = case_when(CL == 1 ~ "Fast",
+                             CL == 2 ~ "Medium",
+                             CL == 3 ~ "Slow"),
+         cluster = fct_relevel(cluster,
+                               c("Slow", "Medium")))
 
 
 # plot --------------------------------------------------------------------
@@ -66,12 +70,12 @@ g <- ggplot(dat) +
 print(g)  
 
 ggsave(g,
-       file = "figure/figure_phi_timeseries.eps",
+       file = "output/figure_phi_timeseries.eps",
        width = 8,
        height = 6,
        device = "eps")
 
 ggsave(g,
-       file = "figure/figure_phi_timeseries.pdf",
+       file = "output/figure_phi_timeseries.pdf",
        width = 8,
        height = 6)
