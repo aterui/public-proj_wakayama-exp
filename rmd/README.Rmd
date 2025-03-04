@@ -25,6 +25,12 @@ Author: Ueda R, Kanaiwa M, Terui A, Takimoto G, Sato T
 
 Journal: Ecology
 
+# Analytical flow
+
+This repository covers statistical procedures for the spatial CJS model.
+Run `code/run_model_scjs.R` to reproduce the reported results.
+Output data are visualized in scripts with `figure_` prefix.
+
 # File description
 
 ```{r}
