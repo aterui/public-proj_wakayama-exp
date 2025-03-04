@@ -1,0 +1,43 @@
+---
+title: "README"
+output: github_document
+knit: (function(inputFile, encoding) {
+        rmarkdown::render(inputFile,
+                          encoding = encoding, 
+                          output_dir = here::here())
+      })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE)
+
+pacman::p_load(tidyverse,
+               runjags)
+```
+
+# Article information
+
+Title: Seasonal timing of ecosystem linkage mediates life-history variation in a salmonid fish population
+
+Author: Ueda R, Kanaiwa M, Terui A, Takimoto G, Sato T
+
+Journal: Ecology
+
+# File description
+
+```{r}
+
+setwd(str_remove(normalizePath("."), "\\\\rmd"))
+source(here::here("rmd/table_rmd.R"))
+knitr::kable(df_fnm)
+
+```
+
+# Session information
+
+```{r}
+sessionInfo()
+```
+
