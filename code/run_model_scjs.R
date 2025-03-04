@@ -1,3 +1,5 @@
+#' DESCRIPTION
+#' This script runs Spatial CJS model
 
 # setup -------------------------------------------------------------------
 

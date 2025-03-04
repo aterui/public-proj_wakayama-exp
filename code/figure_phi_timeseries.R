@@ -1,3 +1,5 @@
+#' DESCRIPTION
+#' This script creates figure for SCJS output with seasonal patterns
 
 # setup -------------------------------------------------------------------
 

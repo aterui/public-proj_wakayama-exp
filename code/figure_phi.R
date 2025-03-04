@@ -1,4 +1,6 @@
-
+#' DESCRIPTION
+#' This script creates figure for SCJS output for experimental endpoint
+ 
 # setup -------------------------------------------------------------------
 
 rm(list=ls(all.names=T))
