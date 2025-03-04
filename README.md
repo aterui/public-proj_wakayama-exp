@@ -28,7 +28,7 @@ data are visualized in scripts with `figure_` prefix.
 | `data_fmt/matrix_ch.rds` | Matrix capture history - data supplied for the spatial CJS model |
 | `data_fmt/matrix_dh.rds` | Matrix location history - data supplied for the spatial CJS model |
 | `data_fmt/matrix_jh.rds` | Matrix julian-date history - data supplied for the spatial CJS model |
-| `data_raw/data_mr.csv` | Raw mark-recapture data |
+| `data_raw/data_s6.csv` | Raw mark-recapture data |
 | `result/re_model_cjs.rds` | JAGS model output |
 
 # Session information
