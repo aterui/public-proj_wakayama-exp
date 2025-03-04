@@ -9,14 +9,15 @@ library(tidyverse)
 
 # data --------------------------------------------------------------------
 
-d0 <- read_csv("data_raw/data_mr.csv")
+d0 <- read_csv("data_raw/data_s6.csv")
 dat <- d0 %>%
   mutate(id = as.character(id),
          SecUL = ceiling(distance * 0.1) * 10, # upstream landmark
          SecDL = SecUL - 10, # downstream landmark
          date = paste(year, month, day, sep = "-"),
          ym = format(as.Date(date), format="%Y-%m"), # reformat date
-         Julian = julian(as.Date(date))) # Julian date
+         Julian = julian(as.Date(date))) %>% # Julian date
+  select(-"...1")
 
 dat1 <- dat %>%
   drop_na(cluster) %>%
