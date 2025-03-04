@@ -5,3 +5,6 @@
 *.Rproj
 *.pdf
 *old
+data_raw/original-mr-data.csv
+data_raw/original-removal-data.csv
+code/format_rawcolumn.R
